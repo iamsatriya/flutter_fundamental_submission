@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/data/api/api.dart';
-import 'package:new_fundamental_submission/data/model/restaurant.dart';
 import 'package:new_fundamental_submission/provider/detail/bookmark_icon_provider.dart';
 import 'package:new_fundamental_submission/provider/detail/bookmark_list_provider.dart';
 import 'package:new_fundamental_submission/provider/detail/restaurant_detail_provider.dart';
@@ -15,7 +15,6 @@ import 'package:new_fundamental_submission/screen/favorite_screen.dart';
 import 'package:new_fundamental_submission/screen/home_screen.dart';
 import 'package:new_fundamental_submission/screen/search_screen.dart';
 import 'package:new_fundamental_submission/static/navigation/navigation_route.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(
@@ -59,7 +58,7 @@ class MainApp extends StatelessWidget {
       routes: {
         NavigationRoute.home.name: (context) => const HomeScreen(),
         NavigationRoute.detail.name: (context) => DetailScreen(
-          restaurant: ModalRoute.of(context)?.settings.arguments as Restaurant,
+          restaurantId: ModalRoute.of(context)?.settings.arguments as String,
         ),
         NavigationRoute.search.name: (context) => const SearchScreen(),
         NavigationRoute.favorite.name: (context) => const FavoriteScreen(),

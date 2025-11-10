@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:new_fundamental_submission/data/model/category.dart';
 import 'package:new_fundamental_submission/data/model/customer_review.dart';
 import 'package:new_fundamental_submission/data/model/menu.dart';
@@ -58,4 +60,36 @@ class Restaurant {
       customerReviews.map((x) => x.toJson()),
     ),
   };
+
+  Map<String, dynamic> toDatabase() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'city': city,
+    'address': address,
+    'picture_id': pictureId,
+    'categories': jsonEncode(categories.map((x) => x.toJson()).toList()),
+    'menus': jsonEncode(menus.toJson()),
+    'rating': rating,
+    'customer_reviews': jsonEncode(
+      customerReviews.map((x) => x.toJson()).toList(),
+    ),
+  };
+
+  factory Restaurant.fromDatabase(Map<String, dynamic> map) => Restaurant(
+    id: map['id'],
+    name: map['name'],
+    description: map['description'],
+    city: map['city'],
+    address: map['address'],
+    pictureId: map['picture_id'],
+    rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+    categories: (jsonDecode(map['categories']) as List)
+        .map((e) => Category.fromJson(e))
+        .toList(),
+    menus: Menus.fromJson(jsonDecode(map['menus'])),
+    customerReviews: (jsonDecode(map['customer_reviews']) as List)
+        .map((e) => CustomerReview.fromJson(e))
+        .toList(),
+  );
 }

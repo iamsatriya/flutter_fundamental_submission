@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
+import 'package:new_fundamental_submission/service/sqlite_service.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/screen/main_screen.dart';
 import 'package:new_fundamental_submission/data/api/api.dart';
 import 'package:new_fundamental_submission/provider/detail/bookmark_icon_provider.dart';
-import 'package:new_fundamental_submission/provider/detail/bookmark_list_provider.dart';
 import 'package:new_fundamental_submission/provider/detail/restaurant_detail_provider.dart';
 import 'package:new_fundamental_submission/provider/detail/restaurant_review_provider.dart';
 import 'package:new_fundamental_submission/provider/home/category_list_provider.dart';
@@ -21,7 +22,11 @@ void main() {
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => BookmarkIconProvider()),
-        ChangeNotifierProvider(create: (context) => BookmarkListProvider()),
+        Provider(create: (context) => SqliteService()),
+        ChangeNotifierProvider(
+          create: (context) =>
+              LocalDatabaseProvider(context.read<SqliteService>()),
+        ),
         Provider(create: (context) => Api()),
         ChangeNotifierProvider(
           create: (context) => RestaurantListProvider(context.read<Api>()),

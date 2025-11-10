@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_fundamental_submission/widget/favorite.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/detail/restaurant_detail_provider.dart';
 import 'package:new_fundamental_submission/static/state/restaurant_detail_result_state.dart';
@@ -31,7 +32,11 @@ class _DetailScreenState extends State<DetailScreen> {
           builder: (context, value, child) {
             return switch (value.resultState) {
               RestaurantDetailSuccessState(:final data) => Column(
-                children: [Text(data.name), Text(data.description)],
+                children: [
+                  Text(data.name),
+                  Favorite(restaurant: data),
+                  Text(data.description),
+                ],
               ),
               RestaurantDetailErrorState(:final error) => Center(
                 child: Text(error),

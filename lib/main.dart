@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
-import 'package:new_fundamental_submission/service/sqlite_service.dart';
+import 'package:new_fundamental_submission/static/state/switch_state.dart';
 import 'package:provider/provider.dart';
+import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
+import 'package:new_fundamental_submission/provider/setting/setting_state_provider.dart';
+import 'package:new_fundamental_submission/provider/setting/shared_preferences_provider.dart';
+import 'package:new_fundamental_submission/service/shared_preferences_service.dart';
+import 'package:new_fundamental_submission/service/sqlite_service.dart';
 import 'package:new_fundamental_submission/screen/main_screen.dart';
 import 'package:new_fundamental_submission/data/api/api.dart';
 import 'package:new_fundamental_submission/provider/detail/bookmark_icon_provider.dart';
@@ -10,17 +14,26 @@ import 'package:new_fundamental_submission/provider/detail/restaurant_review_pro
 import 'package:new_fundamental_submission/provider/home/category_list_provider.dart';
 import 'package:new_fundamental_submission/provider/home/restaurant_list_provider.dart';
 import 'package:new_fundamental_submission/provider/main/index_nav_provider.dart';
-import 'package:new_fundamental_submission/provider/main/theme_provider.dart';
 import 'package:new_fundamental_submission/provider/search/search_restaurant_list_provider.dart';
 import 'package:new_fundamental_submission/screen/detail_screen.dart';
 import 'package:new_fundamental_submission/static/navigation/navigation_route.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => SettingStateProvider()),
+        Provider(create: (context) => SharedPreferencesService(prefs)),
+        ChangeNotifierProvider(
+          create: (context) => SharedPreferencesProvider(
+            context.read<SharedPreferencesService>(),
+          ),
+        ),
         ChangeNotifierProvider(create: (context) => BookmarkIconProvider()),
         Provider(create: (context) => SqliteService()),
         ChangeNotifierProvider(
@@ -50,14 +63,60 @@ void main() {
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    final sharedPreferencesProvider = context.read<SharedPreferencesProvider>();
+    final settingStateProvider = context.read<SettingStateProvider>();
+    Future.microtask(() {
+      if (!mounted) return;
+      sharedPreferencesProvider.getSettingValue();
+      debugPrint(
+        'switch ${sharedPreferencesProvider.setting!.darkmode.isEnable}',
+      );
+      if (sharedPreferencesProvider.setting?.darkmode != null) {
+        settingStateProvider.switchState =
+            sharedPreferencesProvider.setting!.darkmode.isEnable;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Food App',
       initialRoute: NavigationRoute.main.name,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.blueAccent,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+        ),
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blueAccent,
+          brightness: Brightness.dark,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.blueAccent,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Color(0xFF121212),
+        ),
+      ),
+      themeMode:
+          context.watch<SharedPreferencesProvider>().setting?.darkmode ?? false
+          ? ThemeMode.dark
+          : ThemeMode.light,
       routes: {
         NavigationRoute.main.name: (context) => const MainScreen(),
         NavigationRoute.detail.name: (context) => DetailScreen(

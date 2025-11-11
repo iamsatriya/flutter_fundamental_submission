@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/screen/home_screen.dart';
+import 'package:new_fundamental_submission/screen/setting_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/main/index_nav_provider.dart';
 import 'package:new_fundamental_submission/screen/favorite_screen.dart';
@@ -32,6 +33,11 @@ class MainScreen extends StatelessWidget {
             label: 'Favorite',
             tooltip: 'Favorite',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+            tooltip: 'Setting',
+          ),
         ],
       ),
       body: Consumer<IndexNavProvider>(
@@ -40,6 +46,7 @@ class MainScreen extends StatelessWidget {
             0 => const HomeScreen(),
             1 => const SearchScreen(),
             2 => const FavoriteScreen(),
+            3 => const SettingScreen(),
             _ => const SizedBox(),
           };
         },

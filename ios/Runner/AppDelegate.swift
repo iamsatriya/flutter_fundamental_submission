@@ -23,6 +23,14 @@ import workmanager
 
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
 
+    WorkmanagerPlugin.setPluginRegistrantCallback { registry in
+        GeneratedPluginRegistrant.register(with: registry)
+    }
+ 
+    WorkmanagerPlugin.registerBGProcessingTask(withIdentifier: "task-identifier")
+ 
+    WorkmanagerPlugin.registerPeriodicTask(withIdentifier: "com.dicoding.notificationApp", frequency: NSNumber(value: 16 * 60))
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

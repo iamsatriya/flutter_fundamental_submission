@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
 import 'package:new_fundamental_submission/service/local_notification_service.dart';
+import 'package:new_fundamental_submission/service/workmanager_service.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
@@ -69,6 +70,7 @@ void main() async {
           create: (context) =>
               SearchRestaurantListProvider(context.read<Api>()),
         ),
+        Provider(create: (context) => WorkmanagerService()..init()),
       ],
       child: const MainApp(),
     ),
@@ -88,15 +90,18 @@ class _MainAppState extends State<MainApp> {
     super.initState();
     final sharedPreferencesProvider = context.read<SharedPreferencesProvider>();
     final settingStateProvider = context.read<SettingStateProvider>();
-    Future.microtask(() {
+    final localNotificationProvider = context.read<LocalNotificationProvider>();
+    Future.microtask(() async {
       if (!mounted) return;
+      await localNotificationProvider.requestPermissions();
       sharedPreferencesProvider.getSettingValue();
       if (sharedPreferencesProvider.setting?.darkmode != null) {
         settingStateProvider.themeState =
             sharedPreferencesProvider.setting!.darkmode.isEnable;
       }
-      if(sharedPreferencesProvider.setting?.scheduledNotification != null){
-        settingStateProvider.scheduledNotificationState = sharedPreferencesProvider.setting!.scheduledNotification.isEnable;
+      if (sharedPreferencesProvider.setting?.scheduledNotification != null) {
+        settingStateProvider.scheduledNotificationState =
+            sharedPreferencesProvider.setting!.scheduledNotification.isEnable;
       }
     });
   }

@@ -8,6 +8,8 @@ class SharedPreferencesService {
 
   static const String _keyDarkmode = 'FOOD_APP_DARKMODE_KEY';
   static const String _keyScheduledLunchNotification = 'FOOD_APP_SCHEDULED_KEY';
+  static const String _keyScheduledLunchWithWorkManagerNotification =
+      'FOOD_APP_SCHEDULED_WORK_MANAGER_KEY';
 
   Future<void> saveSettingValue(Setting setting) async {
     try {
@@ -15,6 +17,10 @@ class SharedPreferencesService {
       await _sharedPreferences.setBool(
         _keyScheduledLunchNotification,
         setting.scheduledNotification,
+      );
+      await _sharedPreferences.setBool(
+        _keyScheduledLunchWithWorkManagerNotification,
+        setting.scheduleNotificationWithWorkmanagerState,
       );
     } catch (e) {
       throw Exception('Shared preferences cannot save the setting value.');
@@ -26,6 +32,11 @@ class SharedPreferencesService {
       darkmode: _sharedPreferences.getBool(_keyDarkmode) ?? false,
       scheduledNotification:
           _sharedPreferences.getBool(_keyScheduledLunchNotification) ?? false,
+      scheduleNotificationWithWorkmanagerState:
+          _sharedPreferences.getBool(
+            _keyScheduledLunchWithWorkManagerNotification,
+          ) ??
+          false,
     );
   }
 }

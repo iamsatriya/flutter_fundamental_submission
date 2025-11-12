@@ -8,7 +8,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 enum NotificationId {
-  scheduledLunch(1, 'Scheduled Lunch Notification');
+  scheduledLunch(1, 'Scheduled Lunch Notification'),
+  workmanagerNotification(2, 'Scheduled Lunch Notification with Workmanager');
 
   final int id;
   final String name;
@@ -152,5 +153,32 @@ class LocalNotificationService {
             >()
             ?.requestExactAlarmsPermission() ??
         false;
+  }
+
+  Future<void> showWorkManagerNotification({
+    required String body,
+    String channelId = "Workmanager Notification",
+    String channelName = "Workmanager Notifications",
+  }) async {
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      channelId,
+      channelName,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      NotificationId.workmanagerNotification.id,
+      'It\'s time for lunch!',
+      'Have you try $body? it\'s looks tastefull',
+      notificationDetails,
+    );
   }
 }

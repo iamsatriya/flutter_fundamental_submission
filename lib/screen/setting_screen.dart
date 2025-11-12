@@ -3,6 +3,7 @@ import 'package:new_fundamental_submission/data/model/setting.dart';
 import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
 import 'package:new_fundamental_submission/provider/setting/setting_state_provider.dart';
 import 'package:new_fundamental_submission/provider/setting/shared_preferences_provider.dart';
+import 'package:new_fundamental_submission/service/workmanager_service.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +36,9 @@ class SettingScreen extends StatelessWidget {
                         darkmode: val,
                         scheduledNotification:
                             value.scheduledNotificationState.isEnable,
+                        scheduleNotificationWithWorkmanagerState: value
+                            .scheduleNotificationWithWorkmanagerState
+                            .isEnable,
                       ),
                     );
 
@@ -63,6 +67,9 @@ class SettingScreen extends StatelessWidget {
                       Setting(
                         scheduledNotification: val,
                         darkmode: value.themeState.isEnable,
+                        scheduleNotificationWithWorkmanagerState: value
+                            .scheduleNotificationWithWorkmanagerState
+                            .isEnable,
                       ),
                     );
 
@@ -70,7 +77,49 @@ class SettingScreen extends StatelessWidget {
                       localNotificationProvider
                           .scheduleDailyElevenAmNotification();
                     } else {
-                      await localNotificationProvider.cancelScheduledNotification();
+                      await localNotificationProvider
+                          .cancelScheduledNotification();
+                    }
+
+                    sharedPreferencesProvider.getSettingValue();
+                  },
+                );
+              },
+            ),
+            Text(
+              'Schedule Notification with Workmanager',
+              textAlign: TextAlign.center,
+            ),
+            Consumer<SettingStateProvider>(
+              builder: (context, value, child) {
+                return Switch(
+                  value:
+                      value.scheduleNotificationWithWorkmanagerState.isEnable,
+                  onChanged: (val) async {
+                    final settingStateProvider = context
+                        .read<SettingStateProvider>();
+                    final sharedPreferencesProvider = context
+                        .read<SharedPreferencesProvider>();
+                    final workmanagerService = context
+                        .read<WorkmanagerService>();
+
+                    settingStateProvider
+                            .scheduleNotificationWithWorkmanagerState =
+                        val.isEnable;
+
+                    await sharedPreferencesProvider.saveSettingValue(
+                      Setting(
+                        scheduleNotificationWithWorkmanagerState: val,
+                        darkmode: value.themeState.isEnable,
+                        scheduledNotification:
+                            value.scheduledNotificationState.isEnable,
+                      ),
+                    );
+
+                    if (val) {
+                      workmanagerService.schedulePeriodicRestaurantFetch();
+                    } else {
+                      await workmanagerService.cancelAllTask();
                     }
 
                     sharedPreferencesProvider.getSettingValue();

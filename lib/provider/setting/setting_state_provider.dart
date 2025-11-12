@@ -2,12 +2,20 @@ import 'package:flutter/widgets.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
 
 class SettingStateProvider extends ChangeNotifier {
-  SwitchState _switchState = SwitchState.disable;
+  SwitchState _themeState = SwitchState.disable;
+  SwitchState _scheduledNotificationState = SwitchState.disable;
 
-  SwitchState get switchState => _switchState;
+  SwitchState get themeState => _themeState;
 
-  set switchState(SwitchState value) {
-    _switchState = value;
+  set themeState(SwitchState value) {
+    _themeState = value;
+    notifyListeners();
+  }
+
+  SwitchState get scheduledNotificationState => _scheduledNotificationState;
+
+  set scheduledNotificationState(SwitchState value) {
+    _scheduledNotificationState = value;
     notifyListeners();
   }
 }

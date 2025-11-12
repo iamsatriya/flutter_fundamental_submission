@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
+import 'package:new_fundamental_submission/service/local_notification_service.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
@@ -27,8 +29,18 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-        ChangeNotifierProvider(create: (context) => SettingStateProvider()),
         Provider(create: (context) => SharedPreferencesService(prefs)),
+        Provider(
+          create: (context) => LocalNotificationService()
+            ..init()
+            ..configureLocalTimeZone(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocalNotificationProvider(
+            context.read<LocalNotificationService>(),
+          )..requestPermissions(),
+        ),
+        ChangeNotifierProvider(create: (context) => SettingStateProvider()),
         ChangeNotifierProvider(
           create: (context) => SharedPreferencesProvider(
             context.read<SharedPreferencesService>(),
@@ -79,12 +91,12 @@ class _MainAppState extends State<MainApp> {
     Future.microtask(() {
       if (!mounted) return;
       sharedPreferencesProvider.getSettingValue();
-      debugPrint(
-        'switch ${sharedPreferencesProvider.setting!.darkmode.isEnable}',
-      );
       if (sharedPreferencesProvider.setting?.darkmode != null) {
-        settingStateProvider.switchState =
+        settingStateProvider.themeState =
             sharedPreferencesProvider.setting!.darkmode.isEnable;
+      }
+      if(sharedPreferencesProvider.setting?.scheduledNotification != null){
+        settingStateProvider.scheduledNotificationState = sharedPreferencesProvider.setting!.scheduledNotification.isEnable;
       }
     });
   }

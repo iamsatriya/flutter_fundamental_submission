@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/data/model/setting.dart';
+import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
 import 'package:new_fundamental_submission/provider/setting/setting_state_provider.dart';
 import 'package:new_fundamental_submission/provider/setting/shared_preferences_provider.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
@@ -20,17 +21,58 @@ class SettingScreen extends StatelessWidget {
             Consumer<SettingStateProvider>(
               builder: (context, value, child) {
                 return Switch(
-                  value: value.switchState.isEnable,
+                  value: value.themeState.isEnable,
                   onChanged: (val) async {
                     final settingStateProvider = context
                         .read<SettingStateProvider>();
                     final sharedPreferencesProvider = context
                         .read<SharedPreferencesProvider>();
 
-                    settingStateProvider.switchState = val.isEnable;
+                    settingStateProvider.themeState = val.isEnable;
+
                     await sharedPreferencesProvider.saveSettingValue(
-                      Setting(darkmode: val),
+                      Setting(
+                        darkmode: val,
+                        scheduledNotification:
+                            value.scheduledNotificationState.isEnable,
+                      ),
                     );
+
+                    sharedPreferencesProvider.getSettingValue();
+                  },
+                );
+              },
+            ),
+            Text('Schedule Notification', textAlign: TextAlign.center),
+            Consumer<SettingStateProvider>(
+              builder: (context, value, child) {
+                return Switch(
+                  value: value.scheduledNotificationState.isEnable,
+                  onChanged: (val) async {
+                    final settingStateProvider = context
+                        .read<SettingStateProvider>();
+                    final sharedPreferencesProvider = context
+                        .read<SharedPreferencesProvider>();
+                    final localNotificationProvider = context
+                        .read<LocalNotificationProvider>();
+
+                    settingStateProvider.scheduledNotificationState =
+                        val.isEnable;
+
+                    await sharedPreferencesProvider.saveSettingValue(
+                      Setting(
+                        scheduledNotification: val,
+                        darkmode: value.themeState.isEnable,
+                      ),
+                    );
+
+                    if (val) {
+                      localNotificationProvider
+                          .scheduleDailyElevenAmNotification();
+                    } else {
+                      await localNotificationProvider.cancelScheduledNotification();
+                    }
+
                     sharedPreferencesProvider.getSettingValue();
                   },
                 );

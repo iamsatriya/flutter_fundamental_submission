@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import workmanager
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -17,6 +18,10 @@ import UIKit
       UIApplication.shared.cancelAllLocalNotifications();
       UserDefaults.standard.set(true, forKey: "Notification");
     }
+
+    WorkmanagerPlugin.registerTask(withIdentifier: "fetchRestaurantTask")
+
+    UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

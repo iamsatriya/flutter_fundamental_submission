@@ -1,6 +1,9 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:flutter/foundation.dart';
 import 'package:new_fundamental_submission/data/request/add_review_request.dart';
 import 'package:new_fundamental_submission/data/response/add_review_response.dart';
 import 'package:new_fundamental_submission/data/response/detail_restaurant_response.dart';
@@ -78,5 +81,20 @@ class Api {
     } else {
       throw Exception('Failed to add review');
     }
+  }
+
+  Future<Uint8List> getByteArrayFromUrl(String url) async {
+    final response = await http.get(Uri.parse(url));
+    return response.bodyBytes;
+  }
+
+  Future<String> downloadAndSaveFile(String url, String fileName) async {
+    final bytes = await getByteArrayFromUrl(url);
+
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String filePath = '${directory.path}/$fileName';
+    final File file = File(filePath);
+    await file.writeAsBytes(bytes);
+    return filePath;
   }
 }

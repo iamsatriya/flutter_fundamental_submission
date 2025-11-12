@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:new_fundamental_submission/data/model/restaurants.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -156,18 +157,29 @@ class LocalNotificationService {
   }
 
   Future<void> showWorkManagerNotification({
-    required String body,
+    required Restaurants restaurant,
+    required String path,
     String channelId = "Workmanager Notification",
     String channelName = "Workmanager Notifications",
   }) async {
+    final BigPictureStyleInformation bigPictureStyleInformation =
+        BigPictureStyleInformation(
+          FilePathAndroidBitmap(path),
+          contentTitle: restaurant.name,
+          summaryText: restaurant.city,
+        );
+
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       channelId,
       channelName,
       importance: Importance.max,
       priority: Priority.high,
+      styleInformation: bigPictureStyleInformation,
     );
 
-    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+    final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      attachments: [DarwinNotificationAttachment(path, hideThumbnail: false)],
+    );
 
     final notificationDetails = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -177,7 +189,7 @@ class LocalNotificationService {
     await flutterLocalNotificationsPlugin.show(
       NotificationId.workmanagerNotification.id,
       'It\'s time for lunch!',
-      'Have you try $body? it\'s looks tastefull',
+      'Have you try ${restaurant.name}? it\'s looks tastefull',
       notificationDetails,
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:new_fundamental_submission/data/api/api.dart';
+import 'package:new_fundamental_submission/data/api/utils.dart';
 import 'package:new_fundamental_submission/service/local_notification_service.dart';
 import 'package:new_fundamental_submission/static/constant/work_manager.dart';
 import 'package:workmanager/workmanager.dart';
@@ -16,10 +17,18 @@ void callbackDispatcher() {
         final randomRestaurant =
             result.restaurants[Random().nextInt(result.count - 1)];
 
+        final String path = await api.downloadAndSaveFile(
+          Utils.largeImageUrl(randomRestaurant.pictureId),
+          'bigPicture.jpg',
+        );
+
         await (LocalNotificationService()
               ..init()
               ..configureLocalTimeZone())
-            .showWorkManagerNotification(body: randomRestaurant.name);
+            .showWorkManagerNotification(
+              restaurant: randomRestaurant,
+              path: path,
+            );
       }
       return Future.value(true);
     } catch (e) {

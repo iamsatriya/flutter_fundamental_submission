@@ -24,10 +24,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: FilledButton(
+          onPressed: () {},
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Icon(Icons.search), Text('Start your search')],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            Text('Restaurant List'),
             Expanded(
               child: Consumer<RestaurantListProvider>(
                 builder: (context, value, child) {

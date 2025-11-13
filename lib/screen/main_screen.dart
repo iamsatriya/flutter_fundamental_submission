@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/screen/home_screen.dart';
-import 'package:new_fundamental_submission/screen/setting_screen.dart';
+import 'package:new_fundamental_submission/screen/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/main/index_nav_provider.dart';
 import 'package:new_fundamental_submission/screen/favorite_screen.dart';
-import 'package:new_fundamental_submission/screen/search_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -19,14 +18,9 @@ class MainScreen extends StatelessWidget {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-            tooltip: 'Home',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Search',
-            tooltip: 'Search',
+            label: 'Explore',
+            tooltip: 'Explore',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
@@ -34,9 +28,9 @@ class MainScreen extends StatelessWidget {
             tooltip: 'Favorite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Setting',
-            tooltip: 'Setting',
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Profile',
+            tooltip: 'Profile',
           ),
         ],
       ),
@@ -44,9 +38,8 @@ class MainScreen extends StatelessWidget {
         builder: (context, value, child) {
           return switch (value.indexBottomNavBar) {
             0 => const HomeScreen(),
-            1 => const SearchScreen(),
-            2 => const FavoriteScreen(),
-            3 => const SettingScreen(),
+            1 => const FavoriteScreen(),
+            2 => const ProfileScreen(),
             _ => const SizedBox(),
           };
         },

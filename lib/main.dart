@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
+import 'package:new_fundamental_submission/provider/main/user_provider.dart';
 import 'package:new_fundamental_submission/service/local_notification_service.dart';
+import 'package:new_fundamental_submission/service/user_shared_preferences_service.dart';
 import 'package:new_fundamental_submission/service/workmanager_service.dart';
 import 'package:new_fundamental_submission/static/state/switch_state.dart';
+import 'package:new_fundamental_submission/style/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
 import 'package:new_fundamental_submission/provider/setting/setting_state_provider.dart';
@@ -31,6 +34,11 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
         Provider(create: (context) => SharedPreferencesService(prefs)),
+        Provider(create: (context) => UserSharedPreferencesService(prefs)),
+        ChangeNotifierProvider(
+          create: (context) =>
+              UserProvider(context.read<UserSharedPreferencesService>()),
+        ),
         Provider(
           create: (context) => LocalNotificationService()
             ..init()
@@ -111,25 +119,8 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       title: 'Food App',
       initialRoute: NavigationRoute.main.name,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Colors.blueAccent,
-          unselectedItemColor: Colors.grey,
-          backgroundColor: Colors.white,
-        ),
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blueAccent,
-          brightness: Brightness.dark,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Colors.blueAccent,
-          unselectedItemColor: Colors.grey,
-          backgroundColor: Color(0xFF121212),
-        ),
-      ),
+      theme: appLightTheme,
+      darkTheme: appDarkTheme,
       themeMode:
           context.watch<SharedPreferencesProvider>().setting?.darkmode ?? false
           ? ThemeMode.dark

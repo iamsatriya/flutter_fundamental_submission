@@ -14,6 +14,8 @@ ThemeData appLightTheme = ThemeData(
   brightness: Brightness.light,
   scaffoldBackgroundColor: appLightGrey,
 
+  dividerColor: Colors.black12,
+
   tabBarTheme: TabBarThemeData(
     labelColor: appRed,
     unselectedLabelColor: appDarkGrey.withValues(alpha: 0.6),
@@ -133,6 +135,8 @@ ThemeData appDarkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
   scaffoldBackgroundColor: const Color(0xFF121212),
+
+  dividerColor: Colors.white12,
 
   colorScheme: const ColorScheme(
     brightness: Brightness.dark,

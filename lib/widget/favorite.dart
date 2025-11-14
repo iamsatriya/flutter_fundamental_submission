@@ -34,6 +34,11 @@ class _FavoriteState extends State<Favorite> {
   @override
   Widget build(BuildContext context) {
     return IconButton.filled(
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(
+          Theme.of(context).colorScheme.onPrimary.withAlpha(70),
+        ),
+      ),
       onPressed: () async {
         final listProvider = context.read<LocalDatabaseProvider>();
         final iconProvider = context.read<BookmarkIconProvider>();
@@ -51,7 +56,9 @@ class _FavoriteState extends State<Favorite> {
         context.watch<BookmarkIconProvider>().isBookmarked
             ? Icons.favorite
             : Icons.favorite_outline,
-        color: Colors.white,
+        color: context.watch<BookmarkIconProvider>().isBookmarked
+            ? Theme.of(context).colorScheme.primary
+            : Colors.black,
       ),
     );
   }

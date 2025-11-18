@@ -114,9 +114,22 @@ class DetailContent extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
+            data.address,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
             '${data.menus.foods.length} foods • ${data.menus.drinks.length} drinks',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelMedium,
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: data.categories
+                .map((category) => Text('${category.name} '))
+                .toList(),
           ),
           const SizedBox(height: 16),
           Row(
@@ -189,6 +202,25 @@ class DetailContent extends StatelessWidget {
           Divider(color: Theme.of(context).dividerColor),
           const SizedBox(height: 16),
           Text(data.description),
+          const SizedBox(height: 16),
+          Text('Food', style: Theme.of(context).textTheme.headlineLarge),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => Text(data.menus.foods[index].name),
+            separatorBuilder: (context, index) => const SizedBox(height: 4),
+            itemCount: data.menus.foods.length,
+          ),
+          const SizedBox(height: 16),
+          Text('Drinks', style: Theme.of(context).textTheme.headlineLarge),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) =>
+                Text(data.menus.drinks[index].name),
+            separatorBuilder: (context, index) => const SizedBox(height: 4),
+            itemCount: data.menus.drinks.length,
+          ),
         ],
       ),
     );

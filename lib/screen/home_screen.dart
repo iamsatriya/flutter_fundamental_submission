@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CircularProgressIndicator(),
                       ),
                       RestaurantListErrorState(:final error) => Center(
-                        child: Text(error),
+                        child: Text('Error Occured. Please try again later'),
                       ),
                       _ => const SizedBox(),
                     };

@@ -4,8 +4,22 @@ import 'package:new_fundamental_submission/provider/main/local_database_provider
 import 'package:new_fundamental_submission/static/navigation/navigation_route.dart';
 import 'package:provider/provider.dart';
 
-class FavoriteScreen extends StatelessWidget {
+class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
+
+  @override
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
+}
+
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<LocalDatabaseProvider>().getAllFavoriteRestaurant();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

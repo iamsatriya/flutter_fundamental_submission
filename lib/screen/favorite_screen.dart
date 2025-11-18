@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:new_fundamental_submission/data/api/utils.dart';
 import 'package:new_fundamental_submission/provider/main/local_database_provider.dart';
-import 'package:new_fundamental_submission/widget/favorite.dart';
-import 'package:provider/provider.dart';
 import 'package:new_fundamental_submission/static/navigation/navigation_route.dart';
+import 'package:provider/provider.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -38,9 +38,26 @@ class FavoriteScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final restaurant = restaurantList[index];
                           return ListTile(
-                            title: Text(restaurant.name),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Hero(
+                                tag: Utils.smallImageUrl(restaurant.pictureId),
+                                child: Image.network(
+                                  width: 100,
+                                  Utils.smallImageUrl(restaurant.pictureId),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              restaurant.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             subtitle: Text(restaurant.city),
-                            trailing: Favorite(restaurant: restaurant),
+                            trailing: Text(
+                              restaurant.rating.toString(),
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
                             onTap: () {
                               Navigator.pushNamed(
                                 context,

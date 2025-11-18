@@ -29,4 +29,9 @@ class SearchRestaurantListProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void resetSearchRestaurantList() {
+    _resultState = RestaurantListNoneState();
+    notifyListeners();
+  }
 }

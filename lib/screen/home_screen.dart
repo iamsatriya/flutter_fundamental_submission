@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/data/api/utils.dart';
 import 'package:new_fundamental_submission/provider/home/category_list_provider.dart';
+import 'package:new_fundamental_submission/provider/home/restaurant_list_provider.dart';
 import 'package:new_fundamental_submission/static/navigation/navigation_route.dart';
 import 'package:new_fundamental_submission/static/state/category_list_result_state.dart';
-import 'package:provider/provider.dart';
-import 'package:new_fundamental_submission/provider/home/restaurant_list_provider.dart';
 import 'package:new_fundamental_submission/static/state/restaurant_list_result_state.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,10 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: FilledButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, NavigationRoute.search.name);
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Icon(Icons.search), Text('Start your search')],
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Icon(Icons.search),
+              const SizedBox(width: 4),
+              Text('Start your search'),
+            ],
           ),
         ),
       ),
@@ -69,10 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         } else if (index == data.length + 1) {
                           return const SizedBox(width: horizontalSpacing);
                         }
-
                         final category = data[index - 1];
                         return InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              NavigationRoute.search.name,
+                              arguments: category,
+                            );
+                          },
                           child: Container(
                             height: 90,
                             width: 90,

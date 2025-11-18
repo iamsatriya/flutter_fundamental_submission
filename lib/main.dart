@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:new_fundamental_submission/provider/main/local_notification_provider.dart';
 import 'package:new_fundamental_submission/provider/main/user_provider.dart';
+import 'package:new_fundamental_submission/screen/search_screen.dart';
 import 'package:new_fundamental_submission/service/local_notification_service.dart';
 import 'package:new_fundamental_submission/service/user_shared_preferences_service.dart';
 import 'package:new_fundamental_submission/service/workmanager_service.dart';
@@ -129,6 +130,9 @@ class _MainAppState extends State<MainApp> {
         NavigationRoute.main.name: (context) => const MainScreen(),
         NavigationRoute.detail.name: (context) => DetailScreen(
           restaurantId: ModalRoute.of(context)?.settings.arguments as String,
+        ),
+        NavigationRoute.search.name: (context) => SearchScreen(
+          query: ModalRoute.of(context)?.settings.arguments as String?,
         ),
       },
     );
